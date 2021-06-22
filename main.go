@@ -41,6 +41,14 @@ func main() {
 			// Timeout to 10 sec
 			client := &http.Client{
 				Timeout: time.Second * 10,
+				CheckRedirect: func(req *http.Request, via []*http.Request) error {
+					if len(via) > 2 {
+						return fmt.Errorf("max 2 hops")
+					} else if len(via) == 1 {
+						fmt.Println("Redirect ===> ")
+					}
+					return nil
+				},
 			}
 			req, _ := http.NewRequest("GET", "https://"+site, nil)
 			// added a user agent to disguise itself as a browser :)
