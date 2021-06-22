@@ -36,14 +36,16 @@ func main() {
 		fmt.Printf("===>Check groups %v: \n", group)
 		for _, site := range v {
 			fmt.Printf("=>Test site https://%v\n", site)
-			//httptrace
+			// httptrace
 			// test to http get
+			// Timeout to 10 sec
 			client := &http.Client{
 				Timeout: time.Second * 10,
 			}
 			req, _ := http.NewRequest("GET", "https://"+site, nil)
+			// added a user agent to disguise itself as a browser :)
 			req.Header.Add("user-agent", `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36`)
-
+			// code copy https://blog.golang.org/http-tracing
 			var start, connect, dns, tlsHandshake time.Time
 
 			trace := &httptrace.ClientTrace{
@@ -73,6 +75,8 @@ func main() {
 				log.Fatal(err)
 			}
 			fmt.Printf("Total time: %v\n", time.Since(start))
+			// end copy
+			//
 			resp, err := client.Do(req)
 			if err != nil {
 				log.Fatal(err)
